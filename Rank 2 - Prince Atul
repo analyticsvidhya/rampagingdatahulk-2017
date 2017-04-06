@@ -1,0 +1,1027 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/home/sunilray/anaconda2/lib/python2.7/site-packages/matplotlib/font_manager.py:273: UserWarning: Matplotlib is building the font cache using fc-list. This may take a moment.\n",
+      "  warnings.warn('Matplotlib is building the font cache using fc-list. This may take a moment.')\n",
+      "/home/sunilray/anaconda2/lib/python2.7/site-packages/IPython/core/interactiveshell.py:2885: FutureWarning: \n",
+      "mpl_style had been deprecated and will be removed in a future version.\n",
+      "Use `matplotlib.pyplot.style.use` instead.\n",
+      "\n",
+      "  exec(code_obj, self.user_global_ns, self.user_ns)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "%matplotlib inline\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "sns.set(font_scale=1)\n",
+    "\n",
+    "pd.options.display.mpl_style = 'default'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "train = pd.read_csv(\"train.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "test = pd.read_csv(\"test.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#feature based on compariosn of third moving average and fifth moving average\n",
+    "def f35(row):\n",
+    "    if row['Three_Day_Moving_Average'] == row['Five_Day_Moving_Average']:\n",
+    "        val = 0\n",
+    "    elif row['Three_Day_Moving_Average'] > row['Five_Day_Moving_Average']:\n",
+    "        val = 1\n",
+    "    else:\n",
+    "        val = -1\n",
+    "    return val"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#feature based on compariosn of third moving average and tenth moving average\n",
+    "def f310(row):\n",
+    "    if row['Three_Day_Moving_Average'] == row['Ten_Day_Moving_Average']:\n",
+    "        val = 0\n",
+    "    elif row['Three_Day_Moving_Average'] > row['Ten_Day_Moving_Average']:\n",
+    "        val = 1\n",
+    "    else:\n",
+    "        val = -1\n",
+    "    return val"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#feature based on compariosn of third moving average and twenty day moving average\n",
+    "def f320(row):\n",
+    "    if row['Three_Day_Moving_Average'] == row['Twenty_Day_Moving_Average']:\n",
+    "        val = 0\n",
+    "    elif row['Three_Day_Moving_Average'] > row['Twenty_Day_Moving_Average']:\n",
+    "        val = 1\n",
+    "    else:\n",
+    "        val = -1\n",
+    "    return val"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#feature based on compariosn of Five_Day_Moving_Average and tenth moving average\n",
+    "def f510(row):\n",
+    "    if row['Five_Day_Moving_Average'] == row['Ten_Day_Moving_Average']:\n",
+    "        val = 0\n",
+    "    elif row['Five_Day_Moving_Average'] > row['Ten_Day_Moving_Average']:\n",
+    "        val = 1\n",
+    "    else:\n",
+    "        val = -1\n",
+    "    return val"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#feature based on compariosn of Five_Day_Moving_Average and twenty moving average\n",
+    "def f520(row):\n",
+    "    if row['Five_Day_Moving_Average'] == row['Twenty_Day_Moving_Average']:\n",
+    "        val = 0\n",
+    "    elif row['Five_Day_Moving_Average'] > row['Twenty_Day_Moving_Average']:\n",
+    "        val = 1\n",
+    "    else:\n",
+    "        val = -1\n",
+    "    return val"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#feature based on compariosn of Ten_Day_Moving_Average and twenty moving average\n",
+    "def f1020(row):\n",
+    "    if row['Ten_Day_Moving_Average'] == row['Twenty_Day_Moving_Average']:\n",
+    "        val = 0\n",
+    "    elif row['Ten_Day_Moving_Average'] > row['Twenty_Day_Moving_Average']:\n",
+    "        val = 1\n",
+    "    else:\n",
+    "        val = -1\n",
+    "    return val"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "train['Compare_3_5'] = train.apply(f35, axis=1)\n",
+    "test['Compare_3_5'] = test.apply(f35, axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "train['Compare_3_10'] = train.apply(f310, axis=1)\n",
+    "test['Compare_3_10'] = test.apply(f310, axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "train['Compare_3_20'] = train.apply(f320, axis=1)\n",
+    "test['Compare_3_20'] = test.apply(f320, axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "train['Compare_5_10'] = train.apply(f510, axis=1)\n",
+    "test['Compare_5_10'] = test.apply(f510, axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "train['Compare_5_20'] = train.apply(f520, axis=1)\n",
+    "test['Compare_5_20'] = test.apply(f520, axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "train['SUM_3'] = train['Compare_3_5']+train['Compare_3_10']+train['Compare_3_20']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "test['SUM_3'] = test['Compare_3_5']+test['Compare_3_10']+test['Compare_3_20']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#train['Compare_10_20'] = train.apply(f1020, axis=1)\n",
+    "#test['Compare_10_20'] = test.apply(f1020, axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "#dropping unnecessary columns\n",
+    "train.drop(train.columns[[ 0,1, 2,4,5,6,7]], axis=1, inplace= True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Volume</th>\n",
+       "      <th>True_Range</th>\n",
+       "      <th>Average_True_Range</th>\n",
+       "      <th>Positive_Directional_Movement</th>\n",
+       "      <th>Negative_Directional_Movement</th>\n",
+       "      <th>Outcome</th>\n",
+       "      <th>Compare_3_5</th>\n",
+       "      <th>Compare_3_10</th>\n",
+       "      <th>Compare_3_20</th>\n",
+       "      <th>Compare_5_10</th>\n",
+       "      <th>Compare_5_20</th>\n",
+       "      <th>SUM_3</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>-0.33308</td>\n",
+       "      <td>-0.21129</td>\n",
+       "      <td>-0.38778</td>\n",
+       "      <td>-0.39903</td>\n",
+       "      <td>-0.14321</td>\n",
+       "      <td>1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>-0.67096</td>\n",
+       "      <td>-0.46476</td>\n",
+       "      <td>0.97308</td>\n",
+       "      <td>-0.31078</td>\n",
+       "      <td>0.80286</td>\n",
+       "      <td>0</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>-0.22040</td>\n",
+       "      <td>-0.51638</td>\n",
+       "      <td>-0.52368</td>\n",
+       "      <td>-0.24140</td>\n",
+       "      <td>-0.31910</td>\n",
+       "      <td>0</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>-0.23118</td>\n",
+       "      <td>-0.60816</td>\n",
+       "      <td>-0.69311</td>\n",
+       "      <td>-0.40673</td>\n",
+       "      <td>-0.45965</td>\n",
+       "      <td>0</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>0.15076</td>\n",
+       "      <td>-0.33206</td>\n",
+       "      <td>-0.43690</td>\n",
+       "      <td>-0.33347</td>\n",
+       "      <td>0.29217</td>\n",
+       "      <td>0</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    Volume  True_Range  Average_True_Range  Positive_Directional_Movement  \\\n",
+       "0 -0.33308    -0.21129            -0.38778                       -0.39903   \n",
+       "1 -0.67096    -0.46476             0.97308                       -0.31078   \n",
+       "2 -0.22040    -0.51638            -0.52368                       -0.24140   \n",
+       "3 -0.23118    -0.60816            -0.69311                       -0.40673   \n",
+       "4  0.15076    -0.33206            -0.43690                       -0.33347   \n",
+       "\n",
+       "   Negative_Directional_Movement  Outcome  Compare_3_5  Compare_3_10  \\\n",
+       "0                       -0.14321        1           -1            -1   \n",
+       "1                        0.80286        0           -1            -1   \n",
+       "2                       -0.31910        0           -1            -1   \n",
+       "3                       -0.45965        0           -1            -1   \n",
+       "4                        0.29217        0           -1            -1   \n",
+       "\n",
+       "   Compare_3_20  Compare_5_10  Compare_5_20  SUM_3  \n",
+       "0            -1            -1            -1     -3  \n",
+       "1            -1            -1            -1     -3  \n",
+       "2            -1            -1            -1     -3  \n",
+       "3            -1            -1            -1     -3  \n",
+       "4            -1            -1            -1     -3  "
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "#train.info()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As we can clearly see there are null values, let us find out how many values are null"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "#train.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "#test.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "#test.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Filling Null values in ATR with TR values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#train['Average_TR']= train['Average_True_Range']\n",
+    "#test['Average_TR']= test['Average_True_Range']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#train.Average_TR.fillna(train.True_Range, inplace=True)\n",
+    "#test.Average_TR.fillna(test.True_Range, inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#train['PlusADX']= (train['Positive_Directional_Movement']/train['Average_TR'])\n",
+    "#train['MinusADX']= (train['Negative_Directional_Movement']/train['Average_TR'])\n",
+    "#test['PlusADX']= (test['Positive_Directional_Movement']/test['Average_TR'])\n",
+    "#test['MinusADX']= (test['Negative_Directional_Movement']/test['Average_TR'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#dropping fieds which were used to calculate plus and minus ADX\n",
+    "#train.drop('Positive_Directional_Movement', axis=1, inplace = True)\n",
+    "#train.drop('Average_TR', axis=1, inplace = True)\n",
+    "#train.drop('Negative_Directional_Movement', axis=1, inplace = True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "#test.drop('Positive_Directional_Movement', axis=1, inplace = True)\n",
+    "#test.drop('Average_TR', axis=1, inplace = True)\n",
+    "#test.drop('Negative_Directional_Movement', axis=1, inplace = True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "x_train = train\n",
+    "y_train = train['Outcome'].values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "x_train.drop('Outcome', axis=1, inplace = True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Volume</th>\n",
+       "      <th>True_Range</th>\n",
+       "      <th>Average_True_Range</th>\n",
+       "      <th>Positive_Directional_Movement</th>\n",
+       "      <th>Negative_Directional_Movement</th>\n",
+       "      <th>Compare_3_5</th>\n",
+       "      <th>Compare_3_10</th>\n",
+       "      <th>Compare_3_20</th>\n",
+       "      <th>Compare_5_10</th>\n",
+       "      <th>Compare_5_20</th>\n",
+       "      <th>SUM_3</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>-0.33308</td>\n",
+       "      <td>-0.21129</td>\n",
+       "      <td>-0.38778</td>\n",
+       "      <td>-0.39903</td>\n",
+       "      <td>-0.14321</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>-0.67096</td>\n",
+       "      <td>-0.46476</td>\n",
+       "      <td>0.97308</td>\n",
+       "      <td>-0.31078</td>\n",
+       "      <td>0.80286</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>-0.22040</td>\n",
+       "      <td>-0.51638</td>\n",
+       "      <td>-0.52368</td>\n",
+       "      <td>-0.24140</td>\n",
+       "      <td>-0.31910</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>-0.23118</td>\n",
+       "      <td>-0.60816</td>\n",
+       "      <td>-0.69311</td>\n",
+       "      <td>-0.40673</td>\n",
+       "      <td>-0.45965</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>0.15076</td>\n",
+       "      <td>-0.33206</td>\n",
+       "      <td>-0.43690</td>\n",
+       "      <td>-0.33347</td>\n",
+       "      <td>0.29217</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    Volume  True_Range  Average_True_Range  Positive_Directional_Movement  \\\n",
+       "0 -0.33308    -0.21129            -0.38778                       -0.39903   \n",
+       "1 -0.67096    -0.46476             0.97308                       -0.31078   \n",
+       "2 -0.22040    -0.51638            -0.52368                       -0.24140   \n",
+       "3 -0.23118    -0.60816            -0.69311                       -0.40673   \n",
+       "4  0.15076    -0.33206            -0.43690                       -0.33347   \n",
+       "\n",
+       "   Negative_Directional_Movement  Compare_3_5  Compare_3_10  Compare_3_20  \\\n",
+       "0                       -0.14321           -1            -1            -1   \n",
+       "1                        0.80286           -1            -1            -1   \n",
+       "2                       -0.31910           -1            -1            -1   \n",
+       "3                       -0.45965           -1            -1            -1   \n",
+       "4                        0.29217           -1            -1            -1   \n",
+       "\n",
+       "   Compare_5_10  Compare_5_20  SUM_3  \n",
+       "0            -1            -1     -3  \n",
+       "1            -1            -1     -3  \n",
+       "2            -1            -1     -3  \n",
+       "3            -1            -1     -3  \n",
+       "4            -1            -1     -3  "
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x_train.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "#checking correlation plot\n",
+    "\n",
+    "#corr=train.corr()\n",
+    "#plt.figure(figsize=(10, 10))\n",
+    "\n",
+    "#sns.heatmap(corr, vmax=1, square=True,annot=True,cmap='cubehelix')\n",
+    "#plt.title('Correlation between features')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/home/sunilray/anaconda2/lib/python2.7/site-packages/sklearn/cross_validation.py:44: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.\n",
+      "  \"This module will be removed in 0.20.\", DeprecationWarning)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Finally, we split some of the data off for validation\n",
+    "\n",
+    "from sklearn.cross_validation import train_test_split\n",
+    "\n",
+    "x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.2, random_state=4242)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[0]\ttrain-logloss:0.691049\tvalid-logloss:0.691152\n",
+      "Multiple eval metrics have been passed: 'valid-logloss' will be used for early stopping.\n",
+      "\n",
+      "Will train until valid-logloss hasn't improved in 50 rounds.\n",
+      "[10]\ttrain-logloss:0.682793\tvalid-logloss:0.683612\n",
+      "[20]\ttrain-logloss:0.680866\tvalid-logloss:0.682127\n",
+      "[30]\ttrain-logloss:0.679979\tvalid-logloss:0.681665\n",
+      "[40]\ttrain-logloss:0.679424\tvalid-logloss:0.681454\n",
+      "[50]\ttrain-logloss:0.678979\tvalid-logloss:0.681293\n",
+      "[60]\ttrain-logloss:0.678574\tvalid-logloss:0.681179\n",
+      "[70]\ttrain-logloss:0.678242\tvalid-logloss:0.681093\n",
+      "[80]\ttrain-logloss:0.677998\tvalid-logloss:0.681091\n",
+      "[90]\ttrain-logloss:0.677593\tvalid-logloss:0.680977\n",
+      "[100]\ttrain-logloss:0.677371\tvalid-logloss:0.680963\n",
+      "[110]\ttrain-logloss:0.677103\tvalid-logloss:0.680898\n",
+      "[120]\ttrain-logloss:0.676818\tvalid-logloss:0.680853\n",
+      "[130]\ttrain-logloss:0.676536\tvalid-logloss:0.68082\n",
+      "[140]\ttrain-logloss:0.676243\tvalid-logloss:0.680713\n",
+      "[150]\ttrain-logloss:0.676075\tvalid-logloss:0.680721\n",
+      "[160]\ttrain-logloss:0.675766\tvalid-logloss:0.68062\n",
+      "[170]\ttrain-logloss:0.675476\tvalid-logloss:0.6806\n",
+      "[180]\ttrain-logloss:0.675236\tvalid-logloss:0.680558\n",
+      "[190]\ttrain-logloss:0.675044\tvalid-logloss:0.680554\n",
+      "[200]\ttrain-logloss:0.674872\tvalid-logloss:0.680575\n",
+      "[210]\ttrain-logloss:0.674629\tvalid-logloss:0.680559\n",
+      "[220]\ttrain-logloss:0.674443\tvalid-logloss:0.680572\n",
+      "[230]\ttrain-logloss:0.674261\tvalid-logloss:0.680599\n",
+      "Stopping. Best iteration:\n",
+      "[183]\ttrain-logloss:0.675136\tvalid-logloss:0.680527\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "import xgboost as xgb\n",
+    "\n",
+    "# Set our parameters for xgboost\n",
+    "params = {}\n",
+    "params['objective'] = 'binary:logistic'\n",
+    "params['eval_metric'] = 'logloss'\n",
+    "params['eta'] = 0.11 #0.02\n",
+    "params['max_depth'] = 5\n",
+    "#params['subsample']=0.7\n",
+    "#params['min_child_weight']=1\n",
+    "#params['colsample_bytree']=0.7\n",
+    "params['silent']=1\n",
+    "#params['seed']=1632\n",
+    "\n",
+    "d_train = xgb.DMatrix(x_train, label=y_train)\n",
+    "d_valid = xgb.DMatrix(x_valid, label=y_valid)\n",
+    "\n",
+    "watchlist = [(d_train, 'train'), (d_valid, 'valid')]\n",
+    "\n",
+    "bst = xgb.train(params, d_train, 1000, watchlist, early_stopping_rounds=50, verbose_eval=10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "test.head()\n",
+    "df_test = pd.DataFrame()\n",
+    "df_test['ID'] =  test['ID']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "test.drop(test.columns[[  0,1, 2,4,5,6,7]], axis=1, inplace= True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Volume</th>\n",
+       "      <th>True_Range</th>\n",
+       "      <th>Average_True_Range</th>\n",
+       "      <th>Positive_Directional_Movement</th>\n",
+       "      <th>Negative_Directional_Movement</th>\n",
+       "      <th>Compare_3_5</th>\n",
+       "      <th>Compare_3_10</th>\n",
+       "      <th>Compare_3_20</th>\n",
+       "      <th>Compare_5_10</th>\n",
+       "      <th>Compare_5_20</th>\n",
+       "      <th>SUM_3</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0.43959</td>\n",
+       "      <td>0.11595</td>\n",
+       "      <td>0.17058</td>\n",
+       "      <td>-0.39903</td>\n",
+       "      <td>-0.33365</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>-0.38494</td>\n",
+       "      <td>-0.47816</td>\n",
+       "      <td>-0.48696</td>\n",
+       "      <td>-0.28545</td>\n",
+       "      <td>-0.30166</td>\n",
+       "      <td>1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1.38417</td>\n",
+       "      <td>0.27538</td>\n",
+       "      <td>0.86787</td>\n",
+       "      <td>-0.31078</td>\n",
+       "      <td>-0.43770</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>-0.22040</td>\n",
+       "      <td>-0.51638</td>\n",
+       "      <td>0.04259</td>\n",
+       "      <td>-0.24140</td>\n",
+       "      <td>-0.31910</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>-0.21500</td>\n",
+       "      <td>0.10491</td>\n",
+       "      <td>-0.63238</td>\n",
+       "      <td>-0.40673</td>\n",
+       "      <td>-0.45965</td>\n",
+       "      <td>1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>-1</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    Volume  True_Range  Average_True_Range  Positive_Directional_Movement  \\\n",
+       "0  0.43959     0.11595             0.17058                       -0.39903   \n",
+       "1 -0.38494    -0.47816            -0.48696                       -0.28545   \n",
+       "2  1.38417     0.27538             0.86787                       -0.31078   \n",
+       "3 -0.22040    -0.51638             0.04259                       -0.24140   \n",
+       "4 -0.21500     0.10491            -0.63238                       -0.40673   \n",
+       "\n",
+       "   Negative_Directional_Movement  Compare_3_5  Compare_3_10  Compare_3_20  \\\n",
+       "0                       -0.33365           -1            -1            -1   \n",
+       "1                       -0.30166            1            -1            -1   \n",
+       "2                       -0.43770           -1            -1            -1   \n",
+       "3                       -0.31910            1             1            -1   \n",
+       "4                       -0.45965            1            -1             1   \n",
+       "\n",
+       "   Compare_5_10  Compare_5_20  SUM_3  \n",
+       "0            -1            -1     -3  \n",
+       "1            -1            -1     -1  \n",
+       "2            -1            -1     -3  \n",
+       "3             1            -1      1  \n",
+       "4            -1            -1      1  "
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "d_test = xgb.DMatrix(test)\n",
+    "p_test = bst.predict(d_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "sub = pd.DataFrame()\n",
+    "sub['ID'] = df_test['ID']\n",
+    "sub['Outcome'] = p_test\n",
+    "sub.to_csv('2.csv', index=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [Root]",
+   "language": "python",
+   "name": "Python [Root]"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
